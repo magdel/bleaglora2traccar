@@ -164,14 +164,19 @@ var
     try
       BufferMemoryStream.Write(Data[0], DataLength);
       udp := TIdUDPClient.Create();
-      udp.Host:='localhost';
-      udp.Port:=5190;
-      udp.Send('|unit=579978,unittype=5,address=196.190.61.110,kind=1,pending=0,mileage=127268.864,odometer=339863,' +
-                'logic_state=1,reason=20,eventid=1,response=0,longitude=40.86503,latitude=9.06824,altitude=1809,gps_valid=1,' +
-                'gps_connected=1,satellites=7,velocity=23,heading=130,emergency=0,driver=0,ignition=1,door=1,arm=0,disarm=0,' +
-                'extra1=0,extra2=0,extra3=0,siren=0,lock=0,immobilizer=0,unlock=0,fuel=0,rpm=0,modemsignal=0,main_voltage=14.11,' +
-                'backup_voltage=100.00,analog1=3.38,analog2=0.00,analog3=0.00,datetime_utc=2023/08/24 14:56:29,datetime_actual=2023/08/24 14:56:23,network=TCPIP 6600|\r\n');
-      udp.free;
+      udp.Host := 'localhost';
+      udp.Port := 5190;
+      udp.Send(
+        '|unit=579978,unittype=5,address=196.190.61.110,kind=1,pending=0,mileage=127268.864,odometer=339863,'
+        +
+        'logic_state=1,reason=20,eventid=1,response=0,longitude=40.86503,latitude=9.06824,altitude=1809,gps_valid=1,'
+        +
+        'gps_connected=1,satellites=7,velocity=23,heading=130,emergency=0,driver=0,ignition=1,door=1,arm=0,disarm=0,'
+        +
+        'extra1=0,extra2=0,extra3=0,siren=0,lock=0,immobilizer=0,unlock=0,fuel=0,rpm=0,modemsignal=0,main_voltage=14.11,'
+        +
+        'backup_voltage=100.00,analog1=3.38,analog2=0.00,analog3=0.00,datetime_utc=2023/08/24 14:56:29,datetime_actual=2023/08/24 14:56:23,network=TCPIP 6600|\r\n');
+      udp.Free;
     finally
       LeaveCriticalsection(BufferCriticalSection);
     end;
@@ -183,16 +188,16 @@ var
 var
   LBuffer: array[0..16383] of byte;
 
-  procedure fillDataMap(map: TFPStringHashTable; data:UnicodeString);
+  procedure fillDataMap(map: TFPStringHashTable; Data: unicodestring);
   var
     SL: TStringList;
-    I: Integer;
+    I: integer;
   begin
-    SL:=TStringList.Create;
+    SL := TStringList.Create;
     try
-      SL.Delimiter:='&';
-      SL.DelimitedText:=data;
-      for I:=0 to SL.Count-1 do
+      SL.Delimiter := '&';
+      SL.DelimitedText := Data;
+      for I := 0 to SL.Count - 1 do
       begin
 
       end;
@@ -205,10 +210,10 @@ var
   procedure TReadThread.Execute;
   var
     readCount: longint;
-    Utf8Data: UnicodeString;
-    line2parse: UnicodeString;
+    Utf8Data: unicodestring;
+    line2parse: unicodestring;
     byteBuffer: array of byte;
-    I: Integer;
+    I: integer;
     map: TFPStringHashTable;
   begin
     while True do
@@ -217,25 +222,28 @@ var
 
       EnterCriticalsection(BufferCriticalSection);
       try
-        readCount:=0  ;
-        for I:=0 to BufferMemoryStream.Size-2 do
+        readCount := 0;
+        for I := 0 to BufferMemoryStream.Size - 2 do
+        begin
+          if ((TBytes(BufferMemoryStream.Memory)[I] = 13) and
+            (TBytes(BufferMemoryStream.Memory)[I + 1] = 10)) then
           begin
-            if ((TBytes(BufferMemoryStream.Memory)[I]=13) and (TBytes(BufferMemoryStream.Memory)[I+1]=10)) then
+            SetLength(byteBuffer, I);
+            if (Length(byteBuffer) > 0) then
             begin
-                 SetLength(byteBuffer, I);
-                 if (Length(byteBuffer)>0) then
-                 begin
-                    BufferMemoryStream.Position := 0;
-                    readCount := BufferMemoryStream.Read(byteBuffer[0], Length(byteBuffer));
-                 end;
-            if (I<BufferMemoryStream.Size-2) then
-            begin
-                 Move(TBytes(BufferMemoryStream.Memory)[I+2],TBytes(BufferMemoryStream.Memory)[0], I+2);
-                 BufferMemoryStream.SetSize(BufferMemoryStream.Size - I - 2);
-                 BufferMemoryStream.Position := BufferMemoryStream.Size;
+              BufferMemoryStream.Position := 0;
+              readCount :=
+                BufferMemoryStream.Read(byteBuffer[0], Length(byteBuffer));
             end;
+            if (I < BufferMemoryStream.Size - 2) then
+            begin
+              Move(TBytes(BufferMemoryStream.Memory)[I + 2], TBytes(
+                BufferMemoryStream.Memory)[0], I + 2);
+              BufferMemoryStream.SetSize(BufferMemoryStream.Size - I - 2);
+              BufferMemoryStream.Position := BufferMemoryStream.Size;
             end;
           end;
+        end;
 
       finally
         LeaveCriticalsection(BufferCriticalSection);
@@ -243,18 +251,18 @@ var
       if (readCount > 0) then
       begin
         //create string
-        Utf8Data:= UTF8ToString(byteBuffer);
-        WriteLn('UDP: utf8: '+Utf8Data);
+        Utf8Data := UTF8ToString(byteBuffer);
+        WriteLn('UDP: utf8: ' + Utf8Data);
         line2parse := Utf8Data;
         //parse string
         fillDataMap(map, Utf8Data);
 
         //format udp string
         //send udp string
-          WriteLn('UDP: sent some');
-        end;
-
+        WriteLn('UDP: sent some');
       end;
+
+    end;
 
   end;
 
@@ -497,7 +505,7 @@ var
     end;
     WriteLn('Device id: ' + DeviceIdFromConfig);
     WriteLn('Characteristic: ' + CharacteristicFromConfig);
-    WriteLn('Traccar: ' + HostFromConfig+':'+PortFromConfig);
+    WriteLn('Traccar: ' + HostFromConfig + ':' + PortFromConfig);
     WriteLn();
     InitCriticalSection(BufferCriticalSection);
     WaitForReadEvent := RTLEventCreate;
