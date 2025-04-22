@@ -28,6 +28,8 @@ uses
   {$ENDIF}
   Classes,
   SysUtils,
+  strutils,
+  DateUtils,
   CustApp,
   IdUDPClient,
   IniFiles,
@@ -154,7 +156,6 @@ var
     Userdata: PPointer);
   var
     i: integer;
-    udp: TIdUDPClient;
   begin
     //Write('Received[' + IntToStr(DataLength) + ']: ');
     for i := 0 to (DataLength - 1) do
@@ -163,20 +164,7 @@ var
     EnterCriticalsection(BufferCriticalSection);
     try
       BufferMemoryStream.Write(Data[0], DataLength);
-      udp := TIdUDPClient.Create();
-      udp.Host := 'localhost';
-      udp.Port := 5190;
-      udp.Send(
-        '|unit=579978,unittype=5,address=196.190.61.110,kind=1,pending=0,mileage=127268.864,odometer=339863,'
-        +
-        'logic_state=1,reason=20,eventid=1,response=0,longitude=40.86503,latitude=9.06824,altitude=1809,gps_valid=1,'
-        +
-        'gps_connected=1,satellites=7,velocity=23,heading=130,emergency=0,driver=0,ignition=1,door=1,arm=0,disarm=0,'
-        +
-        'extra1=0,extra2=0,extra3=0,siren=0,lock=0,immobilizer=0,unlock=0,fuel=0,rpm=0,modemsignal=0,main_voltage=14.11,'
-        +
-        'backup_voltage=100.00,analog1=3.38,analog2=0.00,analog3=0.00,datetime_utc=2023/08/24 14:56:29,datetime_actual=2023/08/24 14:56:23,network=TCPIP 6600|\r\n');
-      udp.Free;
+
     finally
       LeaveCriticalsection(BufferCriticalSection);
     end;
@@ -191,7 +179,8 @@ var
   procedure fillDataMap(map: TFPStringHashTable; Data: unicodestring);
   var
     SL: TStringList;
-    I: integer;
+    I, eqIndex: integer;
+    s, k, v: string;
   begin
     SL := TStringList.Create;
     try
@@ -199,71 +188,128 @@ var
       SL.DelimitedText := Data;
       for I := 0 to SL.Count - 1 do
       begin
-
+        s := SL[I];
+        eqIndex := Pos('=', s);
+        if (eqIndex > 1) then
+        begin
+          k := Copy2SymbDel(s, '=');
+          v := s;
+          map[k] := v;
+        end;
       end;
     finally
       SL.Free;
     end;
   end;
 
+  function formatTraccarString(map: TFPStringHashTable): ansistring;
+  var
+    ts: string;
+    dt: TDateTime;
+  begin
+    Result := '|unit=' + map['n'] + ',unittype=1,' + 'longitude=' +
+      map['o'] + ',' + 'latitude=' + map['a'] + ',' + 'altitude=' +
+      map['h'] + ',gps_valid=1,' + 'velocity=' + Copy2Symb(map['s'], '.') +
+      ',' + 'heading=' + map['c'] + ',';
+    if (map.Find('e_id') <> nil) then
+      Result += 'eventid=' + map['e_id'] + ',';
+    if (map.Find('sat') <> nil) then
+      Result += 'satellites=' + map['sat'] + ',';
+    if (map.Find('u') <> nil) then
+      Result += 'status=' + map['u'] + ',';
+    if (map.Find('b') <> nil) then
+      Result += 'batteryLevel=' + map['b'] + ',';
+    //some custom part
+    if (map.Find('t_id1') <> nil) then
+      Result += 't_id1=' + map['t_id1'] + ',';
+    if (map.Find('t_bat1') <> nil) then
+      Result += 't_bat1=' + map['t_bat1'] + ',';
+    if (map.Find('t_id2') <> nil) then
+      Result += 't_id2=' + map['t_id2'] + ',';
+    if (map.Find('t_bat2') <> nil) then
+      Result += 't_bat2=' + map['t_bat2'] + ',';
+
+    //datetime reformat
+    dt := ISO8601ToDate(map['t'], True);
+    ts := FormatDateTime('yyyy"/"mm"/"dd HH":"nn":"ss', dt);
+    Result += 'datetime_actual=' + ts + '|'#13#10;
+  end;
 
   procedure TReadThread.Execute;
   var
     readCount: longint;
     Utf8Data: unicodestring;
-    line2parse: unicodestring;
     byteBuffer: array of byte;
     I: integer;
     map: TFPStringHashTable;
+    udp: TIdUDPClient;
+    traccarData: ansistring;
   begin
-    while True do
-    begin
-      RtlEventWaitFor(WaitForReadEvent);
+    map := TFPStringHashTable.Create;
+    udp := TIdUDPClient.Create();
+    udp.Host := HostFromConfig;
+    udp.Port := StrToInt(PortFromConfig);
+    try
+      while True do
+      begin
+        RtlEventWaitFor(WaitForReadEvent);
 
-      EnterCriticalsection(BufferCriticalSection);
-      try
-        readCount := 0;
-        for I := 0 to BufferMemoryStream.Size - 2 do
-        begin
-          if ((TBytes(BufferMemoryStream.Memory)[I] = 13) and
-            (TBytes(BufferMemoryStream.Memory)[I + 1] = 10)) then
+        EnterCriticalsection(BufferCriticalSection);
+        try
+          readCount := 0;
+          for I := 0 to BufferMemoryStream.Size - 2 do
           begin
-            SetLength(byteBuffer, I);
-            if (Length(byteBuffer) > 0) then
+            if ((TBytes(BufferMemoryStream.Memory)[I] = 13) and
+              (TBytes(BufferMemoryStream.Memory)[I + 1] = 10)) then
             begin
-              BufferMemoryStream.Position := 0;
-              readCount :=
-                BufferMemoryStream.Read(byteBuffer[0], Length(byteBuffer));
-            end;
-            if (I < BufferMemoryStream.Size - 2) then
-            begin
-              Move(TBytes(BufferMemoryStream.Memory)[I + 2], TBytes(
-                BufferMemoryStream.Memory)[0], I + 2);
-              BufferMemoryStream.SetSize(BufferMemoryStream.Size - I - 2);
-              BufferMemoryStream.Position := BufferMemoryStream.Size;
+              SetLength(byteBuffer, I);
+              if (Length(byteBuffer) > 0) then
+              begin
+                //has some to read, not only CRLF
+                BufferMemoryStream.Position := 0;
+                readCount := BufferMemoryStream.Read(byteBuffer[0], Length(byteBuffer));
+              end;
+
+              if (I < BufferMemoryStream.Size - 2) then
+              begin
+                //move some after CRLF to start
+                Move(TBytes(BufferMemoryStream.Memory)[I + 2], TBytes(
+                  BufferMemoryStream.Memory)[0], I + 2);
+                BufferMemoryStream.SetSize(BufferMemoryStream.Size - I - 2);
+                BufferMemoryStream.Position := BufferMemoryStream.Size;
+              end
+              else
+              begin
+                //or just clear all because we just read it
+                BufferMemoryStream.SetSize(0);
+              end;
             end;
           end;
+        finally
+          LeaveCriticalsection(BufferCriticalSection);
         end;
-
-      finally
-        LeaveCriticalsection(BufferCriticalSection);
+        if (readCount > 0) then
+        begin
+          //create string
+          Utf8Data := UTF8ToString(byteBuffer);
+          WriteLn('Read line(' + IntToStr(readCount) + '), utf8: ' + Utf8Data);
+          if (StartsStr('AGLoRaN', Utf8Data)) then
+          begin
+            //parse string
+            map.Clear;
+            fillDataMap(map, Utf8Data);
+            //format udp string
+            traccarData := formatTraccarString(map);
+            //send udp string
+            udp.Send(traccarData);
+            WriteLn('UDP: sent(' + IntToStr(Length(traccarData)) + ') some: ' + traccarData);
+          end;
+        end;
       end;
-      if (readCount > 0) then
-      begin
-        //create string
-        Utf8Data := UTF8ToString(byteBuffer);
-        WriteLn('UDP: utf8: ' + Utf8Data);
-        line2parse := Utf8Data;
-        //parse string
-        fillDataMap(map, Utf8Data);
-
-        //format udp string
-        //send udp string
-        WriteLn('UDP: sent some');
-      end;
-
+    finally
+      map.Free;
+      udp.Free;
     end;
-
   end;
 
 

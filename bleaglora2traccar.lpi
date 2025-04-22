@@ -17,9 +17,9 @@
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <MinorVersionNr Value="3"/>
+      <MinorVersionNr Value="1"/>
       <Attributes pvaPreRelease="True"/>
-      <StringTable Comments="https://github.com/magdel/bleaglora2traccar" FileDescription="Reads BLE and writes to COM port " LegalCopyright="All rights reserved" ProductName="bleaglora2traccar"/>
+      <StringTable Comments="https://github.com/magdel/bleaglora2traccar" FileDescription="Reads AGLoRa BLE and writes to UDP for starcom traccar protocol" LegalCopyright="All rights reserved" ProductName="bleaglora2traccar"/>
     </VersionInfo>
     <BuildModes Count="5">
       <Item1 Name="Debug" Default="True"/>
