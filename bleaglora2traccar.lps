@@ -3,17 +3,18 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Win64"/>
-    <Units Count="21">
+    <ManyBuildModesSelection Value="Debug,Win64"/>
+    <BuildModes Active="Debug"/>
+    <Units Count="25">
       <Unit0>
         <Filename Value="bleaglora2traccar.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="430"/>
-        <CursorPos X="73" Y="456"/>
-        <UsageCount Value="82"/>
+        <TopLine Value="175"/>
+        <CursorPos X="9" Y="197"/>
+        <UsageCount Value="85"/>
         <Bookmarks Count="1">
-          <Item0 Y="450" ID="1"/>
+          <Item0 Y="488" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit0>
@@ -21,19 +22,19 @@
         <Filename Value="serialstream.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SerialStream"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="12"/>
         <CursorPos Y="27"/>
-        <UsageCount Value="78"/>
+        <UsageCount Value="81"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="SimpleBleUnit\simpleble.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SimpleBle"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="304"/>
         <CursorPos X="28" Y="358"/>
-        <UsageCount Value="72"/>
+        <UsageCount Value="75"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -46,18 +47,19 @@
       </Unit3>
       <Unit4>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\inc\systemh.inc"/>
-        <EditorIndex Value="5"/>
-        <CursorPos X="22" Y="417"/>
-        <UsageCount Value="14"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="438"/>
+        <CursorPos X="3" Y="465"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\fcl-base\src\custapp.pp"/>
         <UnitName Value="CustApp"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="5"/>
         <CursorPos X="3" Y="30"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="40"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
@@ -105,10 +107,10 @@
       </Unit11>
       <Unit12>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\classes\classesh.inc"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="991"/>
-        <CursorPos X="17" Y="1019"/>
-        <UsageCount Value="13"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="1022"/>
+        <CursorPos X="14" Y="1049"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -120,10 +122,10 @@
       </Unit13>
       <Unit14>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\classes\streams.inc"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="492"/>
         <CursorPos X="3" Y="503"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
@@ -136,10 +138,10 @@
       <Unit16>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\rtl-extra\src\win\serial.pp"/>
         <UnitName Value="Serial"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="19"/>
         <CursorPos X="34" Y="29"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit16>
       <Unit17>
@@ -150,152 +152,185 @@
       </Unit17>
       <Unit18>
         <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPClient.pas"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="363"/>
         <CursorPos X="3" Y="378"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit18>
       <Unit19>
         <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPBase.pas"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="334"/>
         <CursorPos X="3" Y="343"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit19>
       <Unit20>
         <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdStack.pas"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="765"/>
         <CursorPos X="43" Y="782"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\inc\ustringh.inc"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="117"/>
+        <CursorPos X="15" Y="141"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\inc\ustrings.inc"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="1227"/>
+        <CursorPos X="5" Y="1245"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\sysutils\sysutilh.inc"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="68"/>
+        <CursorPos Y="68"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\fcl-base\src\contnrs.pp"/>
+        <UnitName Value="Contnrs"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="336"/>
+        <CursorPos X="14" Y="360"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit24>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="35" Column="3" TopLine="14"/>
+        <Caret Line="399" Column="22" TopLine="377"/>
       </Position1>
       <Position2>
-        <Filename Value="SimpleBleUnit\simpleble.pas"/>
-        <Caret Line="358" Column="42"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="212" Column="13" TopLine="169"/>
       </Position2>
       <Position3>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="140" Column="5" TopLine="102"/>
+        <Caret Line="214" Column="20" TopLine="182"/>
       </Position3>
       <Position4>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="156" Column="5" TopLine="125"/>
+        <Caret Line="213" Column="33" TopLine="187"/>
       </Position4>
       <Position5>
-        <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="41" Column="22" TopLine="11"/>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\inc\ustringh.inc"/>
+        <Caret Line="24" Column="12"/>
       </Position5>
       <Position6>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="39" Column="30" TopLine="25"/>
+        <Caret Line="208" Column="34" TopLine="177"/>
       </Position6>
       <Position7>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="33" Column="17" TopLine="4"/>
+        <Caret Line="209" Column="38" TopLine="177"/>
       </Position7>
       <Position8>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="167" Column="21" TopLine="136"/>
+        <Caret Line="208" Column="11" TopLine="168"/>
       </Position8>
       <Position9>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="166" Column="14" TopLine="136"/>
+        <Caret Line="201" Column="54" TopLine="174"/>
       </Position9>
       <Position10>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="32" Column="3"/>
+        <Caret Line="109" Column="39" TopLine="82"/>
       </Position10>
       <Position11>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="166" Column="7" TopLine="139"/>
+        <Caret Line="200" Column="27" TopLine="174"/>
       </Position11>
       <Position12>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="180" Column="15" TopLine="139"/>
+        <Caret Line="191" Column="5" TopLine="174"/>
       </Position12>
       <Position13>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="190" Column="98" TopLine="139"/>
+        <Caret Line="196" Column="57" TopLine="174"/>
       </Position13>
       <Position14>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="32" Column="15"/>
+        <Caret Line="211" Column="43" TopLine="190"/>
       </Position14>
       <Position15>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="171" Column="23" TopLine="135"/>
+        <Caret Line="200" Column="45" TopLine="177"/>
       </Position15>
       <Position16>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPClient.pas"/>
-        <Caret Line="134" Column="84" TopLine="108"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="213" Column="18" TopLine="178"/>
       </Position16>
       <Position17>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPClient.pas"/>
-        <Caret Line="378" Column="3" TopLine="363"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="204" Column="60" TopLine="183"/>
       </Position17>
       <Position18>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPBase.pas"/>
-        <Caret Line="152" Column="15" TopLine="126"/>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\sysutils\sysutilh.inc"/>
+        <Caret Line="98" Column="4" TopLine="68"/>
       </Position18>
       <Position19>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPBase.pas"/>
-        <Caret Line="330" Column="3" TopLine="324"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="204" Column="51" TopLine="177"/>
       </Position19>
       <Position20>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPBase.pas"/>
-        <Caret Line="157" Column="21" TopLine="132"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="214" Column="16" TopLine="193"/>
       </Position20>
       <Position21>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPBase.pas"/>
-        <Caret Line="335" Column="3" TopLine="331"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="217" Column="22" TopLine="191"/>
       </Position21>
       <Position22>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPBase.pas"/>
-        <Caret Line="156" Column="15" TopLine="130"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="201" Column="21" TopLine="189"/>
       </Position22>
       <Position23>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdUDPBase.pas"/>
-        <Caret Line="343" Column="3" TopLine="334"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="202" Column="9" TopLine="174"/>
       </Position23>
       <Position24>
-        <Filename Value="C:\Users\rfk\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdStack.pas"/>
-        <Caret Line="339" Column="14" TopLine="314"/>
+        <Filename Value="bleaglora2traccar.lpr"/>
+        <Caret Line="211" Column="32" TopLine="197"/>
       </Position24>
       <Position25>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="142" Column="140" TopLine="103"/>
+        <Caret Line="34" Column="11" TopLine="163"/>
       </Position25>
       <Position26>
-        <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="454" Column="12" TopLine="424"/>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\fcl-base\src\contnrs.pp"/>
+        <Caret Line="456" Column="15" TopLine="427"/>
       </Position26>
       <Position27>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="77" Column="17" TopLine="50"/>
+        <Caret Line="242" Column="50" TopLine="181"/>
       </Position27>
       <Position28>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="454" Column="4" TopLine="424"/>
+        <Caret Line="247" Column="12" TopLine="220"/>
       </Position28>
       <Position29>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="77" Column="17" TopLine="50"/>
+        <Caret Line="197" Column="3" TopLine="179"/>
       </Position29>
       <Position30>
         <Filename Value="bleaglora2traccar.lpr"/>
-        <Caret Line="145" Column="132" TopLine="111"/>
+        <Caret Line="192" Column="30" TopLine="164"/>
       </Position30>
     </JumpHistory>
     <RunParams>
@@ -304,10 +339,12 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <HistoryLists Count="1">
+    <HistoryLists Count="3">
       <List0 Name="LaunchingApplication" Type="File" Count="1">
         <Item1 Value="C:\WINDOWS\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List0>
+      <List1 Name="WorkingDirectory" Type="File" Count="1"/>
+      <List2 Name="CommandLineParameters" Count="1"/>
     </HistoryLists>
   </ProjectSession>
   <Debugging>

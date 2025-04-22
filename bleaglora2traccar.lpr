@@ -31,6 +31,7 @@ uses
   CustApp,
   IdUDPClient,
   IniFiles,
+  Contnrs,
   SerialStream,
   SimpleBle;
 
@@ -76,7 +77,6 @@ var
   CharacteristicFromConfig: string;
   PortFromConfig: string;
   HostFromConfig: string;
-  SerialPortStream: TSerialStream;
   BufferMemoryStream: TMemoryStream;
   BufferCriticalSection: TRTLCriticalSection;
   WaitForReadEvent: PRtlEvent;
@@ -171,6 +171,7 @@ var
                 'gps_connected=1,satellites=7,velocity=23,heading=130,emergency=0,driver=0,ignition=1,door=1,arm=0,disarm=0,' +
                 'extra1=0,extra2=0,extra3=0,siren=0,lock=0,immobilizer=0,unlock=0,fuel=0,rpm=0,modemsignal=0,main_voltage=14.11,' +
                 'backup_voltage=100.00,analog1=3.38,analog2=0.00,analog3=0.00,datetime_utc=2023/08/24 14:56:29,datetime_actual=2023/08/24 14:56:23,network=TCPIP 6600|\r\n');
+      udp.free;
     finally
       LeaveCriticalsection(BufferCriticalSection);
     end;
@@ -182,9 +183,33 @@ var
 var
   LBuffer: array[0..16383] of byte;
 
+  procedure fillDataMap(map: TFPStringHashTable; data:UnicodeString);
+  var
+    SL: TStringList;
+    I: Integer;
+  begin
+    SL:=TStringList.Create;
+    try
+      SL.Delimiter:='&';
+      SL.DelimitedText:=data;
+      for I:=0 to SL.Count-1 do
+      begin
+
+      end;
+    finally
+      SL.Free;
+    end;
+  end;
+
+
   procedure TReadThread.Execute;
   var
     readCount: longint;
+    Utf8Data: UnicodeString;
+    line2parse: UnicodeString;
+    byteBuffer: array of byte;
+    I: Integer;
+    map: TFPStringHashTable;
   begin
     while True do
     begin
@@ -192,23 +217,47 @@ var
 
       EnterCriticalsection(BufferCriticalSection);
       try
-        BufferMemoryStream.Position := 0;
-        readCount := BufferMemoryStream.Read(LBuffer, 16384);
-        BufferMemoryStream.SetSize(0);
-        //Synchronize(@Form1.AddMessage);
+        readCount:=0  ;
+        for I:=0 to BufferMemoryStream.Size-2 do
+          begin
+            if ((TBytes(BufferMemoryStream.Memory)[I]=13) and (TBytes(BufferMemoryStream.Memory)[I+1]=10)) then
+            begin
+                 SetLength(byteBuffer, I);
+                 if (Length(byteBuffer)>0) then
+                 begin
+                    BufferMemoryStream.Position := 0;
+                    readCount := BufferMemoryStream.Read(byteBuffer[0], Length(byteBuffer));
+                 end;
+            if (I<BufferMemoryStream.Size-2) then
+            begin
+                 Move(TBytes(BufferMemoryStream.Memory)[I+2],TBytes(BufferMemoryStream.Memory)[0], I+2);
+                 BufferMemoryStream.SetSize(BufferMemoryStream.Size - I - 2);
+                 BufferMemoryStream.Position := BufferMemoryStream.Size;
+            end;
+            end;
+          end;
+
       finally
         LeaveCriticalsection(BufferCriticalSection);
       end;
       if (readCount > 0) then
       begin
-        if (PortFromConfig <> 'CONSOLE') then
-        begin
-          SerialPortStream.Write(LBuffer, readCount);
-          WriteLn('Sent: ' + IntToStr(readCount));
+        //create string
+        Utf8Data:= UTF8ToString(byteBuffer);
+        WriteLn('UDP: utf8: '+Utf8Data);
+        line2parse := Utf8Data;
+        //parse string
+        fillDataMap(map, Utf8Data);
+
+        //format udp string
+        //send udp string
+          WriteLn('UDP: sent some');
         end;
+
       end;
-    end;
+
   end;
+
 
   { -------------------------------- }
   procedure TBle2UdpApplication.DoRun;
@@ -396,15 +445,6 @@ var
     ReadThread := TReadThread.Create(True);
     ReadThread.Start;
 
-    if (PortFromConfig <> 'CONSOLE') then
-    begin
-      WriteLn('Opening: ' + PortFromConfig);
-      SerialPortStream := TSerialStream.Create(PortFromConfig, 9600);
-    end else
-    begin
-       WriteLn('Output to CONSOLE');
-    end;
-
     // subscribe to notification and register callback function
     SimpleBlePeripheralNotify(Peripheral, CharacteristicList[Selection].Service,
       CharacteristicList[Selection].Characteristic, @PeripheralOnNotify, nil);
@@ -425,8 +465,6 @@ var
     SimpleBlePeripheralDisconnect(Peripheral);
     //end;
 
-    if (PortFromConfig <> 'CONSOLE') then
-      SerialPortStream.Free;
     // wait for enter
     ReadLn();
 
@@ -459,6 +497,8 @@ var
     end;
     WriteLn('Device id: ' + DeviceIdFromConfig);
     WriteLn('Characteristic: ' + CharacteristicFromConfig);
+    WriteLn('Traccar: ' + HostFromConfig+':'+PortFromConfig);
+    WriteLn();
     InitCriticalSection(BufferCriticalSection);
     WaitForReadEvent := RTLEventCreate;
   end;
