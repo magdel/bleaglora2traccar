@@ -4,7 +4,7 @@ Accepting packets from AGLoRa by BLE and resending to Traccar
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/magdel/bleaglora2traccar/blob/main/LICENSE.txt)
 [![Hits-of-Code](https://hitsofcode.com/github/magdel/bleaglora2traccar?branch=main&label=Hits-of-Code)](https://hitsofcode.com/github/magdel/bleaglora2traccar/view?branch=main&label=Hits-of-Code)
 
-Reads AGLoRa BLE data and writes to Traccar by starcom protocol (UDP port 5190) by sending UDP-packets.
+Reads AGLoRa BLE data in *compact* format https://github.com/Udj13/AGLoRa/wiki/AGLoRa-BLE-protocol and writes to Traccar by starcom protocol (UDP port 5190) by sending UDP-packets.
 starcom protocol implementation in Traccar - https://github.com/traccar/traccar/blob/master/src/main/java/org/traccar/protocol/StarcomProtocolDecoder.java
 
 ## Usage
