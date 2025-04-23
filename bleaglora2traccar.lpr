@@ -21,6 +21,7 @@ program bleaglora2traccar;
   {$DEFINE DYNAMIC_LOADING}    { UNCOMMENT IF YOU WANT DYNAMIC LOADING }
 {$ENDIF}
 
+//{$DEFINE B2T_DEBUG_OUTPUT}    { UNCOMMENT IF YOU WANT OUTPUT TO CONSOLE FOR DEBUG PURPOSE }
 
 uses
   {$IFDEF UNIX}
@@ -157,9 +158,11 @@ var
   var
     i: integer;
   begin
-    //Write('Received[' + IntToStr(DataLength) + ']: ');
+
+    {$IFDEF B2T_DEBUG_OUTPUT}
     for i := 0 to (DataLength - 1) do
       Write(ansichar(Data[i]));
+    {$ENDIF}
 
     EnterCriticalsection(BufferCriticalSection);
     try
@@ -173,14 +176,11 @@ var
 
   { TReadThread }
 
-var
-  LBuffer: array[0..16383] of byte;
-
   procedure fillDataMap(map: TFPStringHashTable; Data: unicodestring);
   var
     SL: TStringList;
     I, eqIndex: integer;
-    s, k, v: string;
+    s, k: string;
   begin
     SL := TStringList.Create;
     try
@@ -193,8 +193,7 @@ var
         if (eqIndex > 1) then
         begin
           k := Copy2SymbDel(s, '=');
-          v := s;
-          map[k] := v;
+          map[k] := s;
         end;
       end;
     finally
@@ -297,12 +296,20 @@ var
           begin
             //parse string
             map.Clear;
-            fillDataMap(map, Utf8Data);
-            //format udp string
-            traccarData := formatTraccarString(map);
-            //send udp string
-            udp.Send(traccarData);
-            WriteLn('UDP: sent(' + IntToStr(Length(traccarData)) + ') some: ' + traccarData);
+            try
+              fillDataMap(map, Utf8Data);
+              //format udp string
+              traccarData := formatTraccarString(map);
+              //send udp string
+              udp.Send(traccarData);
+
+              WriteLn('UDP: sent(' + IntToStr(Length(traccarData)) + ') some: ' + traccarData);
+            except
+              on E: Exception do
+              begin
+                WriteLn('Error: ' + E.Message);
+              end;
+            end;
           end;
         end;
       end;
@@ -329,10 +336,9 @@ var
 
   procedure TBle2UdpApplication.RunInternal;
   var
-    ErrorMsg: string;
     Adapter: TSimpleBleAdapter;
     ErrCode: TSimpleBleErr = SIMPLEBLE_SUCCESS;
-    i, j, k, Selection, CharacteristicCount: integer;
+    i, j, Selection, CharacteristicCount: integer;
     Peripheral: TSimpleBlePeripheral;
     PeripheralIdentifier: PChar;
     PeripheralAddress: PChar;
@@ -506,9 +512,8 @@ var
     WriteLn('Listening until application is closed..');
     while (True) do
     begin
-      Sleep(10000);
-      if (PortFromConfig <> 'CONSOLE') then
-        WriteLn('Listening..' + DateTimeToStr(Now));
+      Sleep(60000);
+      WriteLn('Listening.. currentTime=' + DateTimeToStr(Now));
     end;
 
     // unsubscribe notifications
@@ -544,8 +549,8 @@ var
       ScanTimeoutMs := iniF.ReadInteger('BleDevice', 'scanTimeoutMs', 10000);
       DeviceIdFromConfig := iniF.ReadString('BleDevice', 'deviceId', 'None');
       CharacteristicFromConfig := iniF.ReadString('BleDevice', 'characteristic', 'None');
-      PortFromConfig := iniF.ReadString('Traccar', 'port', '5190');
-      HostFromConfig := iniF.ReadString('Traccar', 'host', 'localhost');
+      PortFromConfig := iniF.ReadString('TraccarStarcom', 'port', '5190');
+      HostFromConfig := iniF.ReadString('TraccarStarcom', 'host', 'localhost');
     finally
       iniF.Free;
     end;
